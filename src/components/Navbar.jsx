@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   FiMenu,
   FiX,
@@ -19,14 +18,15 @@ import {
   FiTwitter,
   FiInstagram,
   FiLinkedin,
-
-} from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, NavLink } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { FaBuilding, FaCity, FaBusinessTime } from 'react-icons/fa';
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { FaBuilding, FaCity, FaBusinessTime } from "react-icons/fa";
+import { MdOutlineFeedback } from "react-icons/md";
 const Navbar = () => {
-  const { jobSeeker, employer, logoutJobSeeker, logoutEmployer } = useContext(AuthContext);
+  const { jobSeeker, employer, logoutJobSeeker, logoutEmployer } =
+    useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [activeLoginDropdown, setActiveLoginDropdown] = useState(null);
@@ -36,10 +36,27 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", path: "/", icon: <FiHome className="mr-2" /> },
     { label: "Jobs", path: "/jobs", icon: <FiBriefcase className="mr-2" /> },
-    { label: "Categories", path: "/categories", icon: <FiLayers className="mr-2" /> },
-    { label: "Companies", path: "/company", icon: <FaBuilding className="mr-2" /> },
+    {
+      label: "Categories",
+      path: "/categories",
+      icon: <FiLayers className="mr-2" />,
+    },
+    {
+      label: "Companies",
+      path: "/company",
+      icon: <FaBuilding className="mr-2" />,
+    },
     { label: "About Us", path: "/about", icon: <FiInfo className="mr-2" /> },
-    { label: "Contact", path: "/contact", icon: <FiMessageSquare className="mr-2" /> }
+    {
+      label: "Contact",
+      path: "/contact",
+      icon: <FiMessageSquare className="mr-2" />,
+    },
+    {
+      label: "Feedback",
+      path: "/feedback",
+      icon: <MdOutlineFeedback className="mr-2" />,
+    },
   ];
 
   const isLoggedIn = jobSeeker || employer;
@@ -54,8 +71,8 @@ const Navbar = () => {
         setActiveLoginDropdown(null);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const linkClasses = `text-sm px-4 py-2 rounded-lg font-medium transition-colors duration-300 flex items-center`;
@@ -82,7 +99,12 @@ const Navbar = () => {
             </div> */}
             <div className="flex items-center hover:text-cyan-200 transition-colors">
               <FiMail className="mr-2" />
-              <a href="mailto:info@privatejobsearch.com" className="hover:underline">info@privatejobsearch.com</a>
+              <a
+                href="mailto:info@privatejobsearch.com"
+                className="hover:underline"
+              >
+                info@privatejobsearch.com
+              </a>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -122,14 +144,15 @@ const Navbar = () => {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-1">
-              {navLinks.map(link => (
+              {navLinks.map((link) => (
                 <NavLink
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
-                    `${linkClasses} ${isActive
-                      ? 'bg-blue-50 text-blue-600 font-semibold'
-                      : 'hover:bg-blue-50 hover:text-blue-600'
+                    `${linkClasses} ${
+                      isActive
+                        ? "bg-blue-50 text-blue-600 font-semibold"
+                        : "hover:bg-blue-50 hover:text-blue-600"
                     }`
                   }
                 >
@@ -143,7 +166,11 @@ const Navbar = () => {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => setActiveDropdown(activeDropdown === 'profile' ? null : 'profile')}
+                    onClick={() =>
+                      setActiveDropdown(
+                        activeDropdown === "profile" ? null : "profile"
+                      )
+                    }
                     className="flex items-center space-x-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-lg cursor-pointer transition-all"
                   >
                     <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
@@ -152,11 +179,15 @@ const Navbar = () => {
                     <span className="font-medium truncate max-w-[120px]">
                       {currentUser?.name || "Profile"}
                     </span>
-                    {activeDropdown === 'profile' ? <FiChevronUp className="ml-1" /> : <FiChevronDown className="ml-1" />}
+                    {activeDropdown === "profile" ? (
+                      <FiChevronUp className="ml-1" />
+                    ) : (
+                      <FiChevronDown className="ml-1" />
+                    )}
                   </motion.button>
 
                   <AnimatePresence>
-                    {activeDropdown === 'profile' && (
+                    {activeDropdown === "profile" && (
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -190,18 +221,25 @@ const Navbar = () => {
                     <motion.button
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => setActiveLoginDropdown(activeLoginDropdown === 'jobseeker' ? null : 'jobseeker')}
+                      onClick={() =>
+                        setActiveLoginDropdown(
+                          activeLoginDropdown === "jobseeker"
+                            ? null
+                            : "jobseeker"
+                        )
+                      }
                       className="flex items-center space-x-2 border border-blue-100 px-4 py-2 rounded-lg text-sm bg-white hover:bg-blue-50 text-blue-600 transition-colors"
                     >
                       <FiUser className="text-sm" />
                       <span>Job Seeker</span>
-                      {activeLoginDropdown === 'jobseeker' ?
-                        <FiChevronUp className="ml-1" /> :
+                      {activeLoginDropdown === "jobseeker" ? (
+                        <FiChevronUp className="ml-1" />
+                      ) : (
                         <FiChevronDown className="ml-1" />
-                      }
+                      )}
                     </motion.button>
                     <AnimatePresence>
-                      {activeLoginDropdown === 'jobseeker' && (
+                      {activeLoginDropdown === "jobseeker" && (
                         <motion.div
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -231,7 +269,7 @@ const Navbar = () => {
   <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
   Send CV
 </Link> */}
- <Link
+                          <Link
                             to="/CandidateEntryForm"
                             className="px-4 py-3 hover:bg-blue-50 text-sm border-t border-gray-100 flex items-center transition-colors"
                           >
@@ -248,18 +286,23 @@ const Navbar = () => {
                     <motion.button
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
-                      onClick={() => setActiveLoginDropdown(activeLoginDropdown === 'employer' ? null : 'employer')}
+                      onClick={() =>
+                        setActiveLoginDropdown(
+                          activeLoginDropdown === "employer" ? null : "employer"
+                        )
+                      }
                       className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors shadow-sm"
                     >
                       <FiBriefcase className="text-sm" />
                       <span>Employer</span>
-                      {activeLoginDropdown === 'employer' ?
-                        <FiChevronUp className="ml-1" /> :
+                      {activeLoginDropdown === "employer" ? (
+                        <FiChevronUp className="ml-1" />
+                      ) : (
                         <FiChevronDown className="ml-1" />
-                      }
+                      )}
                     </motion.button>
                     <AnimatePresence>
-                      {activeLoginDropdown === 'employer' && (
+                      {activeLoginDropdown === "employer" && (
                         <motion.div
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -305,21 +348,22 @@ const Navbar = () => {
           {mobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
               className="md:hidden bg-white shadow-lg"
             >
               <div className="px-4 py-3 space-y-1">
-                {navLinks.map(link => (
+                {navLinks.map((link) => (
                   <NavLink
                     key={link.path}
                     to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
                     className={({ isActive }) =>
-                      `flex items-center px-4 py-3 rounded-lg transition-colors ${isActive
-                        ? 'bg-blue-100 text-blue-600 font-medium'
-                        : 'text-gray-700 hover:bg-blue-50'
+                      `flex items-center px-4 py-3 rounded-lg transition-colors ${
+                        isActive
+                          ? "bg-blue-100 text-blue-600 font-medium"
+                          : "text-gray-700 hover:bg-blue-50"
                       }`
                     }
                   >

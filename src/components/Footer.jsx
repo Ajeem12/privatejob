@@ -10,6 +10,7 @@ const quickLinks = [
   { label: "About Us", href: "/about" },
   { label: "Job Listings", href: "/jobs" },
   { label: "Contact", href: "/contact" },
+  { label: "Feedback", href: "/feedback" },
 ];
 
 const contactInfo = [
@@ -59,26 +60,28 @@ const Footer = () => {
     error,
   } = useSelector((state) => state.categories);
   const [visitors, setVisitors] = useState(0);
-  const didInsertVisitor = useRef(false); 
+  const didInsertVisitor = useRef(false);
 
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-
   useEffect(() => {
-    if (didInsertVisitor.current) return; 
+    if (didInsertVisitor.current) return;
     didInsertVisitor.current = true;
-  
+
     const insertVisitor = async () => {
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/insert_visitor`, {
-          url: window.location.href,
-          ip: "",
-        });
-  
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/insert_visitor`,
+          {
+            url: window.location.href,
+            ip: "",
+          }
+        );
+
         console.log("API Response:", res.data);
-  
+
         if (res.data.status === "success") {
           setVisitors(res.data.counter);
         }
@@ -86,12 +89,10 @@ const Footer = () => {
         console.error("Visitor insert error:", error);
       }
     };
-  
+
     insertVisitor();
   }, []);
-  
 
-  
   const topCategories = categories.slice(0, 5);
 
   return (
@@ -176,13 +177,20 @@ const Footer = () => {
             <p className="text-gray-400 text-sm">
               &copy; 2023 Private Job Search. All rights reserved.
             </p>
-            <p className="text-center mt-2 text-sm md:text-base font-semibold text-cyan-400 tracking-wide 
+            <p
+              className="text-center mt-2 text-sm md:text-base font-semibold text-cyan-400 tracking-wide 
             drop-shadow-[0_0_8px_rgba(0,255,255,0.6)] 
             hover:drop-shadow-[0_0_12px_rgba(0,255,255,0.9)] 
-            transition-all duration-300 ease-in-out ">
-               Visitors: <span className="text-white-400 font-bold text-lg drop-shadow-[0_0_8px_rgba(0,255,255,0.6)] 
+            transition-all duration-300 ease-in-out "
+            >
+              Visitors:{" "}
+              <span
+                className="text-white-400 font-bold text-lg drop-shadow-[0_0_8px_rgba(0,255,255,0.6)] 
             hover:drop-shadow-[0_0_12px_rgba(0,255,255,0.9)] 
-            transition-all duration-300 ease-in-out">{visitors}</span>
+            transition-all duration-300 ease-in-out"
+              >
+                {visitors}
+              </span>
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               {["Privacy Policy", "Terms of Service", "Sitemap"].map(

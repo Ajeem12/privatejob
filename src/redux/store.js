@@ -33,6 +33,7 @@ import jobWithoutRegReducer from "./slice/employeer/jobWithoutRegSlice";
 import contactReducer from "./slice/contactSlice";
 import candidateRegisterReducer from "./slice/user/candidateentryformslice";
 import hiredPeopleReducer from "./slice/hiredSlice";
+import feedbackReducer from "./slice/feedbackSlice";
 const store = configureStore({
   reducer: {
     categories: categoriesReducer,
@@ -68,6 +69,7 @@ const store = configureStore({
     contact: contactReducer,
     candidateRegister: candidateRegisterReducer,
     hiredPeople: hiredPeopleReducer,
+    feedback: feedbackReducer,
   },
 });
 

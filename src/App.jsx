@@ -37,6 +37,7 @@ import JobCategoryPage from "./pages/Employee/CategoryPage";
 import AddSkills from "./pages/Employee/AddSkills";
 import ErrorPage from "./components/ErrorPage";
 import CandidateEntryForm from "./pages/user/CandidateEntryForm";
+import FeedbackForm from "./pages/FeedbackForm";
 
 const router = createBrowserRouter([
   {
@@ -54,10 +55,14 @@ const router = createBrowserRouter([
       { path: "employer/register", element: <EmployeeRegister /> },
       { path: "company", element: <CompanyListing /> },
       { path: "categories", element: <JobCategoriesPage /> },
-      { path: "*", element: <ErrorPage />},
+      { path: "*", element: <ErrorPage /> },
       {
         path: "CandidateEntryForm",
         element: <CandidateEntryForm />,
+      },
+      {
+        path: "/feedback",
+        element: <FeedbackForm />,
       },
     ],
   },
