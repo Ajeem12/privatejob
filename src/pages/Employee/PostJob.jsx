@@ -21,6 +21,7 @@ import {
 } from "react-icons/fi";
 import { fetchCities } from "../../redux/slice/citiesSlice";
 import { fetchOtherFacilities } from "../../redux/slice/otherFacilitiesSlice";
+import { addSkill } from "../../redux/slice/employeer/addSkillSlice";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { useParams } from "react-router-dom";
@@ -28,6 +29,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const PostJob = () => {
+  const [addNewskill, setAddNewSkill] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -70,7 +72,13 @@ const PostJob = () => {
     industry_type: "",
     working_hrs: "",
     duty_hrs: "",
+    job_title2: "",
+    applicable_gender: "Men",
   });
+
+  const handleToggleSkill = () => {
+    setAddNewSkill((prev) => !prev);
+  };
 
   const [filePreview, setFilePreview] = useState(null);
   const [filteredSkills, setFilteredSkills] = useState([]);
@@ -125,9 +133,11 @@ const PostJob = () => {
         logo: jobData.company_logo || null,
         category: jobData.job_title?.toString() || "",
         regions: jobData.region?.toString() || "1",
-        working_hrs:jobData.working_time,
-        duty_hrs:jobData.duty_hour,
-        industry_type:jobData.industry_type
+        working_hrs: jobData.working_time,
+        duty_hrs: jobData.duty_hour,
+        industry_type: jobData.industry_type,
+        job_title2: jobData.job_title2,
+        applicable_gender: jobData.applicable_gender,
       };
 
       setFormData(transformJobData);
@@ -218,6 +228,8 @@ const PostJob = () => {
     form.append("salary_set", formData.salarySet);
     form.append("region", formData.regions);
     form.append("industry_type", formData.industry_type);
+    form.append("job_title2", formData.job_title2);
+    form.append("applicable_gender", formData.applicable_gender);
     if (formData.logo instanceof File) {
       form.append("hiring_logo", formData.logo);
     }
@@ -256,6 +268,8 @@ const PostJob = () => {
           industry_type: "",
           working_hrs: "",
           duty_hrs: "",
+          job_title2: "",
+          applicable_gender: "Men",
         });
         setFilePreview(null);
         setLocationInput("");
@@ -283,6 +297,39 @@ const PostJob = () => {
     }
   };
 
+  const handleAddSkill = async () => {
+    if (!formData.category) {
+      toast.error("Select job category first");
+      return;
+    }
+
+    if (!formData.newSkill || formData.newSkill.trim() === "") {
+      toast.error("Enter skill name");
+      return;
+    }
+
+    try {
+      // API to add skill
+      const res = await dispatch(
+        addSkill({
+          job_cat: formData.category,
+          skill: formData.newSkill,
+        })
+      ).unwrap();
+
+      toast.success("Skill added!");
+
+      // Clear input
+      setFormData((prev) => ({ ...prev, newSkill: "" }));
+
+      // 👉 REFETCH SKILLS (IMPORTANT)
+      dispatch(fetchAllSkills());
+    } catch (err) {
+      toast.error("Failed to add skill");
+      console.log(err);
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       title: "",
@@ -303,6 +350,8 @@ const PostJob = () => {
       logo: null,
       category: "",
       industry_type: "",
+      job_title2: "",
+      applicable_gender: "Men",
     });
     setFilePreview(null);
     setLocationInput("");
@@ -377,7 +426,7 @@ const PostJob = () => {
             {/* Job Category */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
-                Job Title*
+                Job Category*
               </label>
               <select
                 name="category"
@@ -394,6 +443,21 @@ const PostJob = () => {
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Job Title*
+              </label>
+              <input
+                type="text"
+                name="job_title2"
+                value={formData.job_title2}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Enter job title"
+              />
             </div>
 
             {/* Education */}
@@ -431,9 +495,18 @@ const PostJob = () => {
 
             {/* Skills */}
             <div className="space-y-2 md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Required Skills*
-              </label>
+              <div className="flex gap-3">
+                <label className="block text-sm font-medium text-gray-700">
+                  Required Skills*
+                </label>
+                <button
+                  onClick={handleToggleSkill}
+                  type="button"
+                  className="text-xs font-medium text-gray-50 bg-gradient-to-b from-cyan-500 to-cyan-600 hover:bg-gradient-to-br  focus:outline-none   rounded-lg  px-2 py-[2px] text-center mr-2 mb-2"
+                >
+                  {addNewskill ? "Close" : "Add"}
+                </button>
+              </div>
               <Select
                 isMulti
                 name="skills"
@@ -446,6 +519,31 @@ const PostJob = () => {
                 placeholder="Select required skills..."
               />
             </div>
+
+            {addNewskill && (
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Add New Skill
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="newSkill"
+                    value={formData.newSkill || ""}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                    placeholder="Enter new skill"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddSkill}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Salary Range */}
             <div className="space-y-2">
@@ -730,6 +828,22 @@ const PostJob = () => {
               />
             </div>
 
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Gender (Optional)
+              </label>
+              <select
+                name="applicable_gender"
+                value={formData.applicable_gender}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Both">Other</option>
+              </select>
+            </div>
+
             {/* Upload Logo */}
             <div className="space-y-2 md:col-span-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -766,34 +880,33 @@ const PostJob = () => {
               </div>
             </div>
 
-           {/* Working Hours */}
-<div className="space-y-2">
-  <label className="block text-sm font-medium text-gray-700">
-    Working Hours (Start Time)
-  </label>
-  <input
-    name="working_hrs"
-    type="text"
-    value={formData.working_hrs}
-    onChange={handleChange}
-    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-  />
-</div>
+            {/* Working Hours */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Working Hours (Start Time)
+              </label>
+              <input
+                name="working_hrs"
+                type="text"
+                value={formData.working_hrs}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
 
-{/* Duty Hours */}
-<div className="space-y-2">
-  <label className="block text-sm font-medium text-gray-700">
-    Duty Hours (End Time)
-  </label>
-  <input
-    name="duty_hrs"
-    type="text"
-    value={formData.duty_hrs}
-    onChange={handleChange}
-    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-  />
-</div>
-
+            {/* Duty Hours */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Duty Hours (End Time)
+              </label>
+              <input
+                name="duty_hrs"
+                type="text"
+                value={formData.duty_hrs}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
 
             {/* Job Description */}
             <div className="space-y-2 md:col-span-2">

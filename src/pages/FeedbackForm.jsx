@@ -58,6 +58,19 @@ const FeedbackForm = () => {
       toast.error("Please fill all required fields.");
       return;
     }
+
+    //  Mobile number: must be exactly 10 digits
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(form.mobilenumber)) {
+      toast.error("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    // Email validation (only if entered)
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
     dispatch(submitFeedback(form));
   };
 
@@ -114,8 +127,11 @@ const FeedbackForm = () => {
               name="mobilenumber"
               placeholder="Mobile Number"
               value={form.mobilenumber}
-              onChange={handleChange}
-              maxLength={15}
+              onChange={(e) => {
+                const onlyDigits = e.target.value.replace(/\D/g, "");
+                setForm({ ...form, mobilenumber: onlyDigits });
+              }}
+              maxLength={10}
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
